@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { getModel } from "@/lib/models";
+import { getApiModel } from "@/lib/models";
 
 function getClient() {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -8,9 +8,9 @@ function getClient() {
 }
 
 export async function generateAnthropicResponse(messages: { role: "user" | "assistant"; content: string }[]) {
-  const model = getModel("anthropic");
+  const apiModel = getApiModel("anthropic");
   const response = await getClient().messages.create({
-    model: model.apiModel,
+    model: apiModel,
     max_tokens: 1200,
     system: "You are a concise, reliable assistant inside a professional internal chat tool. Keep answers practical and clear.",
     messages: messages.map((message) => ({ role: message.role, content: message.content })),
@@ -18,5 +18,5 @@ export async function generateAnthropicResponse(messages: { role: "user" | "assi
   });
 
   const text = response.content.filter((block) => block.type === "text").map((block) => block.text).join("\n").trim();
-  return { provider: "anthropic" as const, model: model.apiModel, text };
+  return { provider: "anthropic" as const, model: apiModel, text };
 }

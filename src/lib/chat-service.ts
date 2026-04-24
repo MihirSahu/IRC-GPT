@@ -3,11 +3,11 @@ import { db } from "@/db/client";
 import { ensureSchema } from "@/db/ensure";
 import { appendMessage, createChat, getChat, getChatWithMessages, listChats, listMessages, updateChatProvider } from "@/db/repository";
 import { generateProviderResponse } from "@/lib/ai";
-import type { ProviderId } from "@/lib/models";
+import { getDefaultProvider, type ProviderId } from "@/lib/models";
 import { deriveChatTitle } from "@/lib/title";
 
-export const createChatSchema = z.object({ prompt: z.string().trim().min(1), provider: z.enum(["openai", "anthropic"]).default("openai") });
-export const updateChatSchema = z.object({ provider: z.enum(["openai", "anthropic"]) });
+export const createChatSchema = z.object({ prompt: z.string().trim().min(1), provider: z.enum(["openai", "anthropic", "openrouter"]).default(getDefaultProvider()) });
+export const updateChatSchema = z.object({ provider: z.enum(["openai", "anthropic", "openrouter"]) });
 export const createMessageSchema = z.object({ content: z.string().trim().min(1) });
 
 export async function fetchChats() {
